@@ -4,8 +4,9 @@ hash_value_csv = 'D://CODE//indi_projects//python stuffs//random tasks//official
 model_path = 'D://CODE//indi_projects//python stuffs//random tasks//official_code//website_monitoring//defacement_detector.pkl'
 
 urls_to_care_about = [
-    'http://localhost:3000/#/search',
-    'http://localhost:3000/#/contact',
-    'http://localhost:3000/#/photo-wall',
-    'http://localhost:3000/#/login',
+    # 'http://localhost:3000/#/search',
+    # 'http://localhost:3000/#/contact',
+    # 'http://localhost:3000/#/photo-wall',
+    # 'http://localhost:3000/#/login',
+    'https://srsolar.co.in/',
 ]

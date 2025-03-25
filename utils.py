@@ -63,8 +63,7 @@ def save_hash_value(url, folder_path, csv_file, batch_name):
             'hash_value': [hash_value]
         })
         df.to_csv(csv_file, mode='a', header=not os.path.exists(csv_file), index=False)
-        
-        
+                
 def compare_hash_value(url, folder_path, csv_file, test_batch_name):
     domain_name = regex.sub('_', url.lower())
     domain_name = re.sub('_+', '_',
