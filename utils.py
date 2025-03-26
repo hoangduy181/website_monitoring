@@ -3,8 +3,21 @@ import re
 import hashlib
 import pandas as pd
 import os
+from telegram import Bot
+import asyncio
 
 regex = re.compile('[^a-zA-Z10-9]')
+
+TELEGRAM_BOT_TOKEN = '7465826162:AAEdOXm_w8w39610OJytH9bwg1b1Bk3aK4U'
+TELEGRAM_CHAT_ID = '5247237602'  # Replace with the correct numeric chat ID
+
+async def send_telegram_message(message):
+    bot = Bot(token=TELEGRAM_BOT_TOKEN)
+    await bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
+
+def send_message_sync(message):
+    asyncio.run(send_telegram_message(message))
+
 def save_html_to_path(web_url, folder_path, batch_name):
     domain_name = web_url
     domain_name = regex.sub('_', domain_name.lower())
@@ -80,4 +93,3 @@ def compare_hash_value(url, folder_path, csv_file, test_batch_name):
         print(f"Hash values do not match for {domain_name}")
     
     return new_hash == old_hash
-    
