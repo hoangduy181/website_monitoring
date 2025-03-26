@@ -72,6 +72,7 @@ def check_diff_htmls(test_batch_name):
 
 def check_diff_images(test_batch_name, delete_images=False):
     ssim_scores = []
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     for index, url in enumerate(urls_to_care_about):
         domain_name = regex.sub('_', url.lower())
         domain_name = re.sub('_+', '_',
@@ -88,9 +89,11 @@ def check_diff_images(test_batch_name, delete_images=False):
         ssim_scores.append(score)
 
     if all(score > 0.9 for score in ssim_scores):
-        print("All pages are similar")
+        message = f"[{timestamp}] CHECK_DIFF_IMAGES: All pages are visually similar"
+        print(message)
+        send_message_sync(message)
         # delete all test images
-        if (delete_images):
+        if delete_images:
             sub_folder = f'{save_image_folder}//{domain_name}'
             for index, url in enumerate(urls_to_care_about):
                 try:
@@ -99,11 +102,12 @@ def check_diff_images(test_batch_name, delete_images=False):
                 except Exception as e:
                     print(f"Error deleting {test_image}: {e}")
     else:
-        print("Some pages are different!")
         low_scores = [index for index, score in enumerate(ssim_scores) if score < 0.9]
-        print("Low scores:", low_scores)
         url_to_check = [urls_to_care_about[index] for index in low_scores]
-        print("url_to_check:", url_to_check)
+        message = f"[{timestamp}] CHECK_DIFF_IMAGES: Some pages are visually different!\n" + \
+                  "url_to_check: " + ", ".join(url_to_check)
+        print(message)
+        send_message_sync(message)
 
 # if __name__ == '__main__':
     
