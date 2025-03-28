@@ -6,7 +6,7 @@ model_path = 'D://CODE//indi_projects//python stuffs//random tasks//official_cod
 urls_to_care_about = [
     # 'http://localhost:3000/#/search',
     # 'http://localhost:3000/#/contact',
-    # 'http://localhost:3000/#/photo-wall',
+    'http://localhost:3000/#/photo-wall',
     # 'http://localhost:3000/#/login',
-    'https://srsolar.co.in/',
+    # 'https://srsolar.co.in/',
 ]

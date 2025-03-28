@@ -10,7 +10,7 @@ def my_function():
 scheduler = BackgroundScheduler()
 
 # Schedule the function to run every 10 seconds
-scheduler.add_job(my_function, 'interval', seconds=120)
+scheduler.add_job(my_function, 'interval', seconds=60)
 
 # Start the scheduler
 scheduler.start()

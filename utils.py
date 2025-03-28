@@ -5,18 +5,66 @@ import pandas as pd
 import os
 from telegram import Bot
 import asyncio
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 regex = re.compile('[^a-zA-Z10-9]')
 
 TELEGRAM_BOT_TOKEN = '7465826162:AAEdOXm_w8w39610OJytH9bwg1b1Bk3aK4U'
-TELEGRAM_CHAT_ID = '5247237602'  # Replace with the correct numeric chat ID
+TELEGRAM_CHAT_ID = ['942086993']  # Replace with the correct numeric chat ID
 
 async def send_telegram_message(message):
     bot = Bot(token=TELEGRAM_BOT_TOKEN)
-    await bot.send_message(chat_id=TELEGRAM_CHAT_ID, text=message)
+    try:
+        send_message_tasks = [bot.send_message(chat_id=chat_id, text=message) for chat_id in TELEGRAM_CHAT_ID]
+        await asyncio.gather(*send_message_tasks)
+    except Exception as e:
+        print(f"Error sending message: {e}")
 
 def send_message_sync(message):
     asyncio.run(send_telegram_message(message))
+
+def get_page_content(url, timeout=30):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')  # Run in headless mode
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    
+    try:
+        driver = webdriver.Chrome(options=options)
+        driver.set_page_load_timeout(timeout)
+        
+        # Navigate to URL
+        driver.get(url)
+        
+        # Wait for body content to be present
+        WebDriverWait(driver, timeout).until(
+            EC.presence_of_element_located((By.TAG_NAME, "body"))
+        )
+        
+        # Execute JavaScript to get rendered page content
+        page_content = driver.execute_script("""
+            return {
+                'html': document.documentElement.outerHTML,
+                'text': document.body.innerText,
+                'title': document.title
+            }
+        """)
+        
+        return page_content['html']
+        
+    except TimeoutException:
+        print(f"Timeout while loading {url}")
+        return None
+    except Exception as e:
+        print(f"Error fetching {url}: {str(e)}")
+        return None
+    finally:
+        if 'driver' in locals():
+            driver.quit()
 
 def save_html_to_path(web_url, folder_path, batch_name):
     domain_name = web_url
@@ -28,7 +76,7 @@ def save_html_to_path(web_url, folder_path, batch_name):
     url = web_url.strip()
     try:
         # Get the webpage content
-        response = requests.get(url, timeout=30000)
+        response = get_page_content(url, timeout=30000)
         if os.path.exists(f'{folder_path}//{domain_name}'):
             print(f"Folder {domain_name} already exists")
         else:
@@ -36,7 +84,7 @@ def save_html_to_path(web_url, folder_path, batch_name):
             print(f"Folder {domain_name} created")
         # Write the HTML content to a file
         with open(f'{folder_path}//{domain_name}//{batch_name}.txt', 'w', encoding='utf-8') as file:
-            file.write(response.text)
+            file.write(response)
         print("HTML content has been saved to {}//{}.txt".format(domain_name, batch_name))
         
     except requests.RequestException as e:

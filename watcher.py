@@ -7,6 +7,8 @@ import os
 import re
 from utils import regex, save_html_to_path, compare_hash_value, send_message_sync
 from ngram_model import predict
+from redirect_and_not_found_check import check_not_found_or_redirect
+
 
 def check_with_n_gram(test_batch_name):
     result = []
@@ -122,6 +124,8 @@ def watch_one_time():
     print(message)
     send_message_sync(message)
     
+    check_not_found_or_redirect()
+    
     get_htmls(test_batch_name)
     ngram_check =check_with_n_gram(test_batch_name)
     if not ngram_check:
@@ -137,7 +141,7 @@ def watch_one_time():
         print('*'*20)
     
     get_images(test_batch_name)
-    check_diff_images(test_batch_name, delete_images=True)
+    check_diff_images(test_batch_name, delete_images=False)
     
     send_message_sync("==================DONE==================")
     
