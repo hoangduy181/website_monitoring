@@ -161,3 +161,7 @@ cython_debug/
 
 ./monitor_images/
 ./monitor_htmls/
+
+
+.env
+hash_values.csv

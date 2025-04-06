@@ -13,7 +13,7 @@ from selenium.common.exceptions import TimeoutException
 
 regex = re.compile('[^a-zA-Z10-9]')
 
-TELEGRAM_BOT_TOKEN = '7465826162:AAEdOXm_w8w39610OJytH9bwg1b1Bk3aK4U'
+TELEGRAM_BOT_TOKEN = os.getenv('bot_token')
 TELEGRAM_CHAT_ID = ['942086993']  # Replace with the correct numeric chat ID
 
 async def send_telegram_message(message):
